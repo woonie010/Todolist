@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Card from './components/Card';
 
-
+let id = 0;
 
 const App = () => {
 
@@ -23,15 +23,18 @@ const App = () => {
 		setTodo([
 			...todo,
 			{
-				what,
-				who
+				id: id++,
+				what: what,
+				who: who
 			}
 		]);
 		setWho('');
 		setWhat('');
-		console.log(todo);
 	}
 	
+	const handleClickDelete = (id) => {
+		setTodo(todo.filter((elem) => elem.id !== id));
+	}
 
 	const handleKeyPress = (e) => {
 		if (e.key === 'Enter') {
@@ -39,20 +42,21 @@ const App = () => {
 		}
 	}
 
-	const test = () => {
-	
-	}
-
 	return (
 		<div>
 			<input value={what} onChange={handleWhat} placeholder="what"/>
 			<input value={who} onChange={handleWho} placeholder="who" onKeyPress={handleKeyPress}/>
-			<button value={todo}onClick={handleClick}>make</button>
-			<button onClick={test}>test</button>
-
+			<button onClick={handleClick}>make</button>
 			<div>
 				{
-					todo.map((elem, i) => <Card {...elem} key={i} />)
+					todo.map((elem, i) => 
+					<Card
+						what={elem.what}
+						who={elem.who}
+						id={elem.id}
+						handleClickDelete={handleClickDelete}
+						key={i}
+					/>)
 				}
 			</div>
 		</div>
