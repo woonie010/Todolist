@@ -10,6 +10,8 @@ const App = () => {
 	
 	const [todo, setTodo] = useState([]);
 
+	const [mod, setMod] = useState('');
+
 
 	const handleWhat = (e) => { 
 		setWhat(e.target.value);
@@ -25,13 +27,28 @@ const App = () => {
 			{
 				id: id++,
 				what: what,
-				who: who
+				who: who,
+				clicked: false,
 			}
 		]);
 		setWho('');
 		setWhat('');
 	}
 	
+	const handleClickCard = (id) => {
+		const target = todo.findIndex((elem) => elem.id === id);
+		if (target === -1) return;
+
+		setTodo([
+			...todo.slice(0, target),
+			{
+				...todo[target],
+				clicked: !todo[target].clicked
+			},
+			...todo.slice(target + 1, todo.length)
+		]);
+	}
+
 	const handleClickDelete = (id) => {
 		setTodo(todo.filter((elem) => elem.id !== id));
 	}
@@ -54,6 +71,8 @@ const App = () => {
 						what={elem.what}
 						who={elem.who}
 						id={elem.id}
+						clicked={elem.clicked}
+						handleClickCard={handleClickCard}
 						handleClickDelete={handleClickDelete}
 						key={i}
 					/>)
