@@ -1,26 +1,62 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import Card from './components/Card';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+
+const App = () => {
+
+	const [what, setWhat] = useState('');
+	const [who, setWho] = useState('');
+	
+	const [todo, setTodo] = useState([]);
+
+
+	const handleWhat = (e) => { 
+		setWhat(e.target.value);
+	}
+
+	const handleWho = (e) => {
+		setWho(e.target.value);
+	}
+
+	const handleClick = () => {
+		setTodo([
+			...todo,
+			{
+				what,
+				who
+			}
+		]);
+		setWho('');
+		setWhat('');
+		console.log(todo);
+	}
+	
+
+	const handleKeyPress = (e) => {
+		if (e.key === 'Enter') {
+			handleClick();
+		}
+	}
+
+	const test = () => {
+	
+	}
+
+	return (
+		<div>
+			<input value={what} onChange={handleWhat} placeholder="what"/>
+			<input value={who} onChange={handleWho} placeholder="who" onKeyPress={handleKeyPress}/>
+			<button value={todo}onClick={handleClick}>make</button>
+			<button onClick={test}>test</button>
+
+			<div>
+				{
+					todo.map((elem, i) => <Card {...elem} key={i} />)
+				}
+			</div>
+		</div>
+	);
 }
 
 export default App;

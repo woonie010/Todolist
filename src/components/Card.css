@@ -1,0 +1,18 @@
+.card {
+    background-color: white;
+    margin: 30px;
+    padding: 30px;
+}
+
+.card-what {
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.card-who {
+    font-size: 18px;
+}
+
+.card:hover {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1), 0 2px 12px rgba(0, 0, 0, 0.1);
+}
