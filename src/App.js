@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
 import Card from './components/Card';
-import Done from './components/Done'
 
 let id = 0;
 
@@ -8,12 +8,10 @@ const App = () => {
 
 	const [what, setWhat] = useState('');
 	const [who, setWho] = useState('');
-	
+
 	const [todo, setTodo] = useState([]);
-	const [doing, setDoing] = useState([]);
 
-
-	const handleWhat = (e) => { 
+	const handleWhat = (e) => {
 		setWhat(e.target.value);
 	}
 
@@ -29,12 +27,13 @@ const App = () => {
 				what: what,
 				who: who,
 				clicked: false,
+				status: 0
 			}
 		]);
 		setWho('');
 		setWhat('');
 	}
-	
+
 	const handleClickCard = (id) => {
 		const target = todo.findIndex((elem) => elem.id === id);
 		if (target === -1) return;
@@ -49,22 +48,34 @@ const App = () => {
 		]);
 	}
 
-	const handleModify = (id,modWhat,modWho) => {
-		const target = todo.findIndex((elem) => elem.id ===id);
+	const handleModify = (id, modWhat, modWho) => {
+		const target = todo.findIndex((elem) => elem.id === id);
 		if (target === -1) return;
 
 		setTodo([
 			...todo.slice(0, target),
 			{
 				...todo[target],
-				what: modWhat ,
+				what: modWhat,
 				who: modWho,
-				clicked: false
+				clicked: false,
 			},
 			...todo.slice(target + 1, todo.length)
-
 		]);
+	}
+	
+	const handleClickStatus = (id) => {
+		const target = todo.findIndex((elem) => elem.id === id);
+		if (target === -1) return;
 
+		setTodo([
+			...todo.slice(0, target),
+			{
+				...todo[target],
+				status: (todo[target].status + 1) % 2
+			},
+			...todo.slice(target + 1, todo.length)
+		])
 	}
 
 	const handleClickDelete = (id) => {
@@ -76,58 +87,136 @@ const App = () => {
 			handleClick();
 		}
 	}
-
-	const handleDoing = (id) => {
-		const target = todo.findIndex((elem) => elem.id === id);
-
-		setDoing([
-			...doing.push(todo[target])
-		]);
-
-
-		setTodo(todo.filter((elem) => elem.id !== id));
-	}
+	console.log(todo);
+	const Progress = todo.filter((elem) => elem.status === 0);
+	const Done = todo.filter((elem) => elem.status === 1);
 
 	return (
-		<div className="toDoList">
-			<div className="toDoList-header">
-			<input value={what} onChange={handleWhat} placeholder="what"/>
-			<input value={who} onChange={handleWho} placeholder="who" onKeyPress={handleKeyPress}/>
-			<button onClick={handleClick}>make</button>
-			</div>
-			<div className="toDoList-body">
-			<div className="toDo">
+		<Container>
+			<InputContainer>
+				<Input value={what} onChange={handleWhat} placeholder={'무엇을'} />
+				<Input value={who} onChange={handleWho} onKeyPress={handleKeyPress} placeholder={'누구랑'} />
+				<Button onClick={handleClick}>생성</Button>
+			</InputContainer>
+			<TodoContainer>
 				{
-					todo.map((elem, i) => 
-					<Card
-						what={elem.what}
-						who={elem.who}
-						id={elem.id}
-						clicked={elem.clicked}
-						handleClickCard={handleClickCard}
-						handleClickDelete={handleClickDelete}
-						handleModify={handleModify}
-						handleDoing={handleDoing}
-						key={i}
-					/>)
+					Progress.length > 0 &&
+					<ProgressContainer>
+						<Caption status={0}>진행중</Caption>
+						{
+							Progress.map((elem, i) =>
+								<Card {...elem} key={i}
+									handleClickCard={handleClickCard}
+									handleModify={handleModify}
+									handleClickDelete={handleClickDelete}
+									handleClickStatus={handleClickStatus}
+								/>
+							)
+						}
+					</ProgressContainer>
 				}
-			</div>
-			
-			<div className="doing">
+
 				{
-					doing.map((elem, i) =>
-					<Done
-						what={elem.what}
-						who={elem.who}
-						/>)
+					Done.length > 0 &&
+					<DoneContainer>
+						<Caption status={1}>완료</Caption>
+						{
+							Done.map((elem, i) =>
+								<Card {...elem} key={i}
+									handleClickCard={handleClickCard}
+									handleModify={handleModify}
+									handleClickDelete={handleClickDelete}
+									handleClickStatus={handleClickStatus}
+									/>
+							)
+						}
+					</DoneContainer>
 				}
-		
-			</div>
-			
-			<div className="done"></div>
-		</div>
-		</div>
+
+			</TodoContainer>
+		</Container>
 	);
 }
+
+const Container = styled.div`
+	width: 600px;
+	padding: 25px;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1), 0 2px 12px rgba(0, 0, 0, 0.1);
+	margin: 0 auto;
+	background-color: white;
+	margin-top: 50px;
+	display: flex;
+	flex-direction: column;
+`
+
+const InputContainer = styled.div`
+	padding: 30px;
+	display: flex;
+	flex-direction: column;
+	border-bottom: 1px solid rgb(220, 220, 220);
+`
+
+const Input = styled.input`
+	border: none;
+	border-bottom: 2px solid black;
+	font-size: 20px;
+	width: 80%;
+	margin: 0 auto;
+
+	& + & {
+		margin-top: 30px;
+	}
+
+	&:focus {
+		outline: none;
+	}
+`
+
+const Button = styled.button`
+	border: none;
+	background-color: rgb(235, 100, 107);
+	box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1), 0 5px 12px rgba(0, 0, 0, 0.1);
+	width: 80%;
+	height: 35px;
+	margin: 0 auto;
+	color: white;
+	margin-top: 15px;
+	font-size: 16px;
+`
+
+const TodoContainer = styled.div`
+	margin-top: 20px;
+`
+
+const ProgressContainer = styled.div`
+
+`
+const DoneContainer = styled.div`
+	margin-top: 15px;
+`
+
+const getStatus = (status) => {
+	if (status === 0) {
+		return 'rgb(235, 100, 107)';
+	}
+	else if (status === 1) {
+		return 'green';
+	}
+	return 'black';
+}
+
+const Caption = styled.div`
+	width: 200px;
+	height: 30px;
+	background-color: ${(props) => getStatus(props.status)};
+	margin-left: 70px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: white;
+	border-radius: 10px 10px 0 0;
+`
+
+
 
 export default App;
