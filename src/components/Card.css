@@ -1,3 +1,24 @@
+.toDoList-body{
+    max-width: 975px;
+    margin: auto;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.toDo {
+    
+    background-color: Blue;
+    border: solid;
+    border-width: 1px;
+    border-color: blue;
+}
+
+.doing{
+    background-color: red;
+
+}
+
 .card {
     background-color: white;
     margin: 30px;

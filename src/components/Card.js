@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Card.css';
 
-const Card = ({ what, who, clicked, id, handleClickDelete, handleClickCard }) => {
+const Card = ({ what, who, clicked, id, handleClickDelete, handleClickCard, handleModify, handleDoing }) => {
     const [modWhat, setModWhat] = useState(what);
     const [modWho, setModWho] = useState(who);
 
@@ -16,6 +16,7 @@ const Card = ({ what, who, clicked, id, handleClickDelete, handleClickCard }) =>
         e.stopPropagation();
     }
 
+
     return (
         <div className="card" onClick={() => handleClickCard(id)} >
             {
@@ -23,6 +24,7 @@ const Card = ({ what, who, clicked, id, handleClickDelete, handleClickCard }) =>
                     <div onClick={handleClickInput}>
                         <input value={modWhat} onChange={handleChangeWhat}  />
                         <input value={modWho} onChange={handleChangeWho}  />
+                        <button onClick= {() => handleModify(id,modWhat,modWho)}>Modify</button>
                     </div>
                     :
                     <div>
@@ -30,7 +32,10 @@ const Card = ({ what, who, clicked, id, handleClickDelete, handleClickCard }) =>
                         <div className="card-who">{who}</div>
                     </div>
             }
+            <div onClick={handleClickInput}>
             <button onClick={() => handleClickDelete(id)}>Delete</button>
+            <button onClick={() => handleDoing(id)}>Done</button>
+            </div>
         </div>
     );
 }
